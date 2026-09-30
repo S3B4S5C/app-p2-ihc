@@ -1,12 +1,12 @@
 <div class="shell">
   <header class="shell-header">
     <a class="shell-brand" routerLink="/mis-mascotas" aria-label="Ir a Mis Mascotas">
-      <span aria-hidden="true">🐾</span><span>Mascotas al Día</span>
+      <app-icon name="pets" [size]="24" /><span>Mascotas al Día</span>
     </a>
     <div class="shell-actions">
       <app-theme-toggle />
       <div class="menu-wrap">
-        <button class="menu-button" type="button" (click)="toggleMenu($event)" [attr.aria-expanded]="menuOpen()" aria-label="Abrir menú">☰</button>
+        <button class="menu-button" type="button" (click)="toggleMenu($event)" [attr.aria-expanded]="menuOpen()" aria-label="Abrir menú"><app-icon name="menu" [size]="24" /></button>
         @if (menuOpen()) {
           <nav class="menu" (click)="$event.stopPropagation()" aria-label="Navegación principal">
             <div class="menu__user">

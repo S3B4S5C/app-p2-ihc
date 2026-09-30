@@ -7,12 +7,13 @@ import { AuthService } from '../../core/auth/auth.service';
 import { ApiError } from '../../models/auth.models';
 import { ButtonComponent } from '../../shared/ui/button/button.component';
 import { FormFieldComponent } from '../../shared/ui/form-field/form-field.component';
+import { IconComponent } from '../../shared/ui/icon/icon.component';
 import { ThemeToggleComponent } from '../../shared/ui/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-register-page',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, ButtonComponent, FormFieldComponent, ThemeToggleComponent],
+  imports: [ReactiveFormsModule, RouterLink, ButtonComponent, FormFieldComponent, IconComponent, ThemeToggleComponent],
   templateUrl: './register.page.html',
   styleUrl: '../auth-pages.css',
 })
