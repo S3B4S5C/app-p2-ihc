@@ -1,0 +1,48 @@
+import { HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { AuthResponse, AuthSession, AuthUser, LoginRequest, RegisterRequest } from '../../models/auth.models';
+import { TokenStorageService } from './token-storage.service';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private readonly http = inject(HttpClient);
+  private readonly storage = inject(TokenStorageService);
+
+  readonly user = computed(() => this.storage.session()?.user ?? null);
+
+  isAuthenticated(): boolean {
+    return this.storage.read() !== null;
+  }
+
+  login(request: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, request).pipe(
+      tap((response) => this.persist(response)),
+    );
+  }
+
+  register(request: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, request).pipe(
+      tap((response) => this.persist(response)),
+    );
+  }
+
+  refreshCurrentUser(): Observable<AuthUser> {
+    return this.http.get<AuthUser>(`${environment.apiUrl}/auth/me`).pipe(
+      tap((user) => {
+        const current = this.storage.read();
+        if (current) this.storage.save({ ...current, user });
+      }),
+    );
+  }
+
+  logout(): void {
+    this.storage.clear();
+  }
+
+  private persist(response: AuthResponse): void {
+    const session: AuthSession = { accessToken: response.accessToken, user: response.user };
+    this.storage.save(session);
+  }
+}
