@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: despensa-backend
+  # Permite compartir el archivo .env con Docker Compose durante el desarrollo.
+  # Las variables de entorno reales tienen prioridad sobre los valores del archivo.
+  config:
+    import: "optional:file:./.env[.properties]"
+  datasource:
+    url: jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME:despensa}
+    username: ${DB_USER:despensa}
+    password: ${DB_PASSWORD:despensa_dev}
+    driver-class-name: org.postgresql.Driver
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
