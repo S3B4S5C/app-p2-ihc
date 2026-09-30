@@ -1,4 +1,4 @@
-package com.ihc.despensa.backend.health;
+package com.ihc.mascotas.backend.health;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataAccessResourceFailureException;
