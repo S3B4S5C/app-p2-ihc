@@ -1,63 +1,86 @@
-# Backend IHC — App de despensa
+# Backend — Mascotas al Día
 
-Proyecto **Java 25 + Spring Boot 4.1.1 + Gradle 9.3.0 + PostgreSQL 17 (Docker)**.
-Se coloca en `app-p2-ihc/backend/`, sin modificar `app-p2-ihc/frontend/`.
+Backend de autenticación para **Mascotas al Día** con Java 25, Spring Boot 4.1.1, Gradle 9.3.0 y PostgreSQL 17.
 
 ## Requisitos
 
-- JDK **25** (`java -version` debe indicar 25; configurar `JAVA_HOME`).
-- Docker Desktop con Docker Compose v2.
-- Conexión a Internet para descargar Gradle y las dependencias la primera vez.
+- JDK 25.
+- Docker Desktop + Docker Compose v2.
+- Conexión a Internet la primera vez que Gradle descarga dependencias.
 
-## Arranque en Windows PowerShell
-
-Desde `F:\Docs\uni\ihc\app-p2-ihc\backend`:
+## Arranque
 
 ```powershell
-Copy-Item .env.example .env
+cd backend
+Copy-Item .env.example .env   # si todavía no existe
+
 docker compose up -d
-powershell -ExecutionPolicy Bypass -File .\setup-gradle.ps1 # Solo la primera vez
 .\gradlew.bat bootRun
 ```
 
-El script `setup-gradle.ps1` obtiene **Gradle 9.3.0**, verifica su SHA-256 y genera el
-**Gradle Wrapper oficial** (`gradlew.bat`, `gradlew` y el JAR). Si ya tienes Gradle
-9.1 o superior, puedes sustituir ese paso por `gradle wrapper --gradle-version 9.3.0`.
-El instalador local `.gradle-local/` se puede borrar después del bootstrap.
-
-Si utilizas el frontend Angular con `npm start` o `ng serve`, podrá acceder al
-backend en `http://localhost:8080` (origen CORS por defecto: `http://localhost:4200`).
+El backend escucha en `http://localhost:8080` y PostgreSQL en `127.0.0.1:5432` por defecto.
 
 ## Endpoints
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| GET | `/api/health` | Comprueba `SELECT 1` contra PostgreSQL; devuelve `200` o `503`. |
-| GET | `/actuator/health` | Health check estándar de Spring Boot (incluye indicador de BD). |
+| Método | Ruta | Auth | Descripción |
+| --- | --- | --- | --- |
+| `GET` | `/api/health` | No | Comprueba la conexión real con PostgreSQL. |
+| `POST` | `/api/auth/register` | No | Crea una cuenta y devuelve un JWT. |
+| `POST` | `/api/auth/login` | No | Valida credenciales y devuelve un JWT. |
+| `GET` | `/api/auth/me` | Sí | Devuelve el usuario asociado al JWT. |
+| `GET` | `/actuator/health` | No | Health check de Spring Boot. |
 
-Cuando PostgreSQL está disponible:
+Todas las demás rutas bajo `/api/**` requieren un `Authorization: Bearer <token>` válido.
 
-```powershell
-Invoke-RestMethod http://localhost:8080/api/health
-# { "status": "UP", "database": "UP" }
+### Registro
+
+```json
+{
+  "fullName": "Ana Pérez",
+  "email": "ana@example.com",
+  "password": "password123"
+}
 ```
 
-Si PostgreSQL deja de responder, `/api/health` devuelve HTTP 503 con
-`{ "status": "DOWN", "database": "DOWN" }`.
+### Login
 
-## Configuración
+```json
+{
+  "email": "ana@example.com",
+  "password": "password123"
+}
+```
 
-`compose.yaml` expone PostgreSQL **solo en 127.0.0.1** en el puerto `DB_PORT`
-(por defecto 5432). La base de datos se llama `despensa` y sus datos persisten
-en el volumen `postgres_data` de Docker.
+### Respuesta de autenticación
 
-`application.yaml` importa opcionalmente el mismo `.env` cuando ejecutas el
-backend **desde esta carpeta**, para mantener sincronizados el usuario, la
-contraseña, el nombre de BD y el puerto. Las variables reales del sistema tienen
-prioridad. No subas `.env` al repositorio ni uses las credenciales de ejemplo en producción.
+```json
+{
+  "accessToken": "<jwt>",
+  "tokenType": "Bearer",
+  "expiresInSeconds": 28800,
+  "user": {
+    "id": "<uuid>",
+    "fullName": "Ana Pérez",
+    "email": "ana@example.com"
+  }
+}
+```
 
-Variables soportadas: `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_PORT`,
-`SERVER_PORT` y `FRONTEND_ORIGIN`.
+## Seguridad
+
+- BCrypt para hashes de contraseña.
+- JWT HS256 con expiración e issuer validados.
+- Backend stateless: no crea sesión HTTP.
+- El secreto JWT se configura mediante `JWT_SECRET`; el valor de ejemplo es solo para desarrollo.
+- CORS limitado a `FRONTEND_ORIGIN`.
+- Los mensajes de login no revelan si el correo existe.
+
+## Base de datos y migraciones
+
+Flyway ejecuta automáticamente `src/main/resources/db/migration/V1__create_app_user.sql`.
+Hibernate usa `ddl-auto: validate`: la estructura se modifica únicamente con migraciones.
+
+Si ya tenías el volumen de la antigua base `despensa`, este cambio usa un volumen nuevo (`mascotas_postgres_data`).
 
 ## Pruebas
 
@@ -66,16 +89,12 @@ Variables soportadas: `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_PORT`,
 .\gradlew.bat build
 ```
 
-Las pruebas unitarias simulan la BD: verifican las respuestas HTTP 200 y 503 sin
-necesitar Docker. Para comprobar la integración real, inicia PostgreSQL y luego
-consulta `/api/health` o `/actuator/health`.
+Se cubren servicio de autenticación, credenciales inválidas, duplicados, generación/validación del JWT, validación HTTP de los payloads y health check.
 
-## Detener
+## Detener PostgreSQL
 
 ```powershell
-docker compose down        # Conserva los datos
-docker compose down -v     # Elimina también la base de datos local
+docker compose down
+# o para borrar también datos locales:
+docker compose down -v
 ```
-
-> Si cambias `DB_NAME`, `DB_USER` o `DB_PASSWORD` después de crear el volumen,
-> PostgreSQL no reconfigura automáticamente la BD ya inicializada.

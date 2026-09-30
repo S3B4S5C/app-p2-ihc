@@ -1,59 +1,47 @@
-# AppP2Ihc
+# Frontend — Mascotas al Día
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.11.
+Frontend mobile-first construido con Angular 21 standalone.
 
-## Development server
+## Arranque
 
-To start a local development server, run:
+Con el backend ejecutándose en `http://localhost:8080`:
 
-```bash
-ng serve
+```powershell
+cd frontend
+npm ci
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abre `http://localhost:4200`.
 
-## Code scaffolding
+## Rutas
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- `/login`: inicio de sesión.
+- `/registro`: creación de cuenta.
+- `/mis-mascotas`: ruta privada detrás de `authGuard`.
 
-```bash
-ng generate component component-name
+Usuarios autenticados que intenten entrar en login/registro son redirigidos a `/mis-mascotas`.
+
+## Piezas reutilizables
+
+- `ButtonComponent`: botón primario/secundario, estado disabled/loading.
+- `FormFieldComponent`: label + input + error accesible.
+- `ThemeToggleComponent`: alterna tema claro/oscuro.
+- `AppShellComponent`: header + menú autenticado desplegable.
+- `AuthService`: contrato con `/api/auth` y estado reactivo de sesión.
+- `TokenStorageService`: persistencia y validación básica de expiración JWT.
+- `authInterceptor`: adjunta `Bearer` únicamente a peticiones del API.
+- `authGuard` / `publicOnlyGuard`: control de navegación.
+
+## Tema
+
+El sistema visual está basado en verde salvia/teal, asociado a cuidado y bienestar. Los temas claro y oscuro se definen con custom properties globales en `src/styles.css`; los componentes consumen tokens semánticos y no colores hardcodeados.
+
+## Pruebas
+
+```powershell
+npm test
+npm run build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Los tests básicos cubren creación de la aplicación, almacenamiento/expiración de sesión, login y comportamiento del interceptor JWT.

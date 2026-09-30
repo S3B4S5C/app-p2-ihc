@@ -1,0 +1,22 @@
+# Tareas del cambio
+
+- [x] Renombrar configuración backend al dominio Mascotas al Día.
+- [x] Incorporar Security, JPA, Resource Server y Flyway.
+- [x] Crear migración inicial de usuarios.
+- [x] Crear dominio y puertos de autenticación.
+- [x] Implementar adaptador JPA.
+- [x] Implementar emisor/verificador JWT.
+- [x] Implementar registro, login y usuario actual.
+- [x] Normalizar errores HTTP.
+- [x] Proteger `/api/**` salvo endpoints públicos explícitos.
+- [x] Crear modelos TypeScript de auth.
+- [x] Crear almacenamiento reactivo de sesión.
+- [x] Crear interceptor y guards.
+- [x] Crear componentes UI reutilizables.
+- [x] Crear tema claro/oscuro.
+- [x] Crear login y registro mobile-first.
+- [x] Crear shell autenticado y logout.
+- [x] Crear placeholder Mis Mascotas.
+- [x] Agregar pruebas backend.
+- [x] Agregar pruebas básicas frontend.
+- [x] Documentar arquitectura y ejecución.
