@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class AuthService {
     private final TokenService tokenService;
     private final Clock clock;
 
+    @Autowired
     public AuthService(UserRepository users, PasswordEncoder passwordEncoder, TokenService tokenService) {
         this(users, passwordEncoder, tokenService, Clock.systemUTC());
     }

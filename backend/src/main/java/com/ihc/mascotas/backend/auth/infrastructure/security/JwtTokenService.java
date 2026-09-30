@@ -4,6 +4,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -23,6 +24,7 @@ public class JwtTokenService implements TokenService {
     private final String issuer;
     private final Clock clock;
 
+    @Autowired
     public JwtTokenService(
             JwtEncoder encoder,
             @Value("${app.security.jwt.ttl:PT8H}") Duration ttl,
