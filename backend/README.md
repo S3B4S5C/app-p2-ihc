@@ -1,4 +1,4 @@
-# Backend — Mascotas al Día
+# Backend IHC — Mascotas al Día
 
 Backend de autenticación para **Mascotas al Día** con Java 25, Spring Boot 4.1.1, Gradle 9.3.0 y PostgreSQL 17.
 
