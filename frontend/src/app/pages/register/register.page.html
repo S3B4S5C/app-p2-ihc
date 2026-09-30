@@ -1,0 +1,22 @@
+<main class="auth-page auth-page--register">
+  <div class="auth-page__theme"><app-theme-toggle /></div>
+  <section class="auth-card" aria-labelledby="register-title">
+    <div class="brand" aria-label="Mascotas al Día">
+      <span class="brand__mark" aria-hidden="true">🐾</span>
+      <span>Mascotas al Día</span>
+    </div>
+    <div class="auth-heading">
+      <h1 id="register-title">Crea tu cuenta</h1>
+      <p>Empieza a organizar el cuidado de tus compañeros.</p>
+    </div>
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <app-form-field fieldId="register-name" label="Nombre completo" autocomplete="name" placeholder="Tu nombre" [control]="form.controls.fullName" [error]="errorFor('fullName')" />
+      <app-form-field fieldId="register-email" label="Correo electrónico" type="email" autocomplete="email" placeholder="tu@correo.com" [control]="form.controls.email" [error]="errorFor('email')" />
+      <app-form-field fieldId="register-password" label="Contraseña" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" [control]="form.controls.password" [error]="errorFor('password')" />
+      <app-form-field fieldId="register-confirm-password" label="Confirmar contraseña" type="password" autocomplete="new-password" placeholder="Repite tu contraseña" [control]="form.controls.confirmPassword" [error]="errorFor('confirmPassword')" />
+      @if (serverError()) { <div class="form-alert" role="alert">{{ serverError() }}</div> }
+      <app-button type="submit" [loading]="submitting()">Crear cuenta</app-button>
+    </form>
+    <p class="auth-footer">¿Ya tienes una cuenta? <a routerLink="/login">Iniciar sesión</a></p>
+  </section>
+</main>

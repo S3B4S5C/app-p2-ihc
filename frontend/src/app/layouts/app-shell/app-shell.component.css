@@ -1,0 +1,16 @@
+.shell { min-height: 100dvh; background: var(--color-bg); }
+.shell-header { position: sticky; top: 0; z-index: 20; min-height: 64px; padding: .7rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; background: color-mix(in srgb, var(--color-surface) 92%, transparent); border-bottom: 1px solid var(--color-border); backdrop-filter: blur(12px); }
+.shell-brand { color: var(--color-text); text-decoration: none; font-weight: 800; display: inline-flex; align-items: center; gap: .5rem; min-width: 0; }
+.shell-actions { display: flex; align-items: center; gap: .55rem; }
+.menu-wrap { position: relative; }
+.menu-button { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); font-size: 1.2rem; cursor: pointer; }
+.menu-button:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 2px; }
+.menu { position: absolute; right: 0; top: calc(100% + .55rem); width: min(82vw, 280px); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: .55rem; box-shadow: var(--shadow-menu); }
+.menu__user { display: grid; gap: .15rem; padding: .65rem .7rem .75rem; border-bottom: 1px solid var(--color-border); margin-bottom: .35rem; overflow: hidden; }
+.menu__user strong, .menu__user span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu__user span { color: var(--color-text-muted); font-size: .78rem; }
+.menu__link { display: flex; width: 100%; box-sizing: border-box; padding: .75rem; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-text); text-decoration: none; font: inherit; cursor: pointer; }
+.menu__link:hover, .menu__link--active { background: var(--color-primary-soft); color: var(--color-primary-strong); }
+.menu__logout { color: var(--color-danger); }
+.shell-content { width: min(100%, 980px); margin: 0 auto; padding: 1.25rem 1rem 2rem; box-sizing: border-box; }
+@media (min-width: 760px) { .shell-header { padding-inline: 2rem; } .shell-content { padding: 2rem; } }

@@ -1,0 +1,20 @@
+<main class="auth-page">
+  <div class="auth-page__theme"><app-theme-toggle /></div>
+  <section class="auth-card" aria-labelledby="login-title">
+    <div class="brand" aria-label="Mascotas al Día">
+      <span class="brand__mark" aria-hidden="true">🐾</span>
+      <span>Mascotas al Día</span>
+    </div>
+    <div class="auth-heading">
+      <h1 id="login-title">Bienvenido de nuevo</h1>
+      <p>Ingresa para continuar cuidando a tus mascotas.</p>
+    </div>
+    <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <app-form-field fieldId="login-email" label="Correo electrónico" type="email" autocomplete="email" placeholder="tu@correo.com" [control]="form.controls.email" [error]="errorFor('email')" />
+      <app-form-field fieldId="login-password" label="Contraseña" type="password" autocomplete="current-password" placeholder="Mínimo 8 caracteres" [control]="form.controls.password" [error]="errorFor('password')" />
+      @if (serverError()) { <div class="form-alert" role="alert">{{ serverError() }}</div> }
+      <app-button type="submit" [loading]="submitting()">Iniciar sesión</app-button>
+    </form>
+    <p class="auth-footer">¿Aún no tienes cuenta? <a routerLink="/registro">Crear cuenta</a></p>
+  </section>
+</main>
