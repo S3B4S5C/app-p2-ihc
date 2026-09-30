@@ -1,0 +1,39 @@
+package com.ihc.mascotas.backend.auth.infrastructure.persistence;
+
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
+import com.ihc.mascotas.backend.auth.domain.User;
+import com.ihc.mascotas.backend.auth.domain.UserRepository;
+
+@Repository
+class JpaUserRepositoryAdapter implements UserRepository {
+
+    private final SpringDataUserRepository repository;
+
+    JpaUserRepositoryAdapter(SpringDataUserRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repository.existsByEmail(email);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return repository.findByEmail(email).map(JpaUserRepositoryAdapter::toDomain);
+    }
+
+    @Override
+    public User save(User user) {
+        UserJpaEntity entity = new UserJpaEntity(
+                user.id(), user.fullName(), user.email(), user.passwordHash(), user.createdAt(), user.updatedAt());
+        return toDomain(repository.save(entity));
+    }
+
+    private static User toDomain(UserJpaEntity entity) {
+        return new User(entity.id, entity.fullName, entity.email, entity.passwordHash, entity.createdAt, entity.updatedAt);
+    }
+}
