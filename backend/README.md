@@ -1,4 +1,4 @@
-# Backend IHC — App de despensa
+# Backend IHC — Mascotas al Día
 
 Proyecto **Java 25 + Spring Boot 4.1.1 + Gradle 9.3.0 + PostgreSQL 17 (Docker)**.
 Se coloca en `app-p2-ihc/backend/`, sin modificar `app-p2-ihc/frontend/`.
@@ -76,6 +76,3 @@ consulta `/api/health` o `/actuator/health`.
 docker compose down        # Conserva los datos
 docker compose down -v     # Elimina también la base de datos local
 ```
-
-> Si cambias `DB_NAME`, `DB_USER` o `DB_PASSWORD` después de crear el volumen,
-> PostgreSQL no reconfigura automáticamente la BD ya inicializada.
