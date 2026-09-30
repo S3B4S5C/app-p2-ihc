@@ -23,6 +23,7 @@ export class LoginPage {
   private readonly route = inject(ActivatedRoute);
   readonly submitting = signal(false);
   readonly serverError = signal<string | null>(null);
+  readonly passwordChanged = this.route.snapshot.queryParamMap.get('passwordChanged') === '1';
 
   readonly form = new FormGroup({
     email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),

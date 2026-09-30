@@ -19,15 +19,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ihc.mascotas.backend.auth.application.AuthService;
+import com.ihc.mascotas.backend.auth.application.PasswordService;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
+    private final PasswordService passwordService;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, PasswordService passwordService) {
         this.authService = authService;
+        this.passwordService = passwordService;
     }
 
     @PostMapping("/register")
@@ -44,6 +47,24 @@ public class AuthController {
     @GetMapping("/me")
     public UserResponse me(Principal principal) {
         return toResponse(authService.currentUser(principal.getName()));
+    }
+
+    @PostMapping("/password-reset/request")
+    public PasswordResetResponse requestPasswordReset(@Valid @RequestBody PasswordResetRequest request) {
+        var result = passwordService.requestReset(request.email());
+        return new PasswordResetResponse(result.resetToken(), result.expiresAt());
+    }
+
+    @PostMapping("/password-reset/confirm")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void confirmPasswordReset(@Valid @RequestBody PasswordResetConfirmRequest request) {
+        passwordService.confirmReset(request.token(), request.newPassword());
+    }
+
+    @PostMapping("/password/change")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(Principal principal, @Valid @RequestBody ChangePasswordRequest request) {
+        passwordService.changePassword(principal.getName(), request.currentPassword(), request.newPassword());
     }
 
     private static AuthResponse toResponse(AuthService.AuthResult result) {
@@ -64,6 +85,18 @@ public class AuthController {
             @NotBlank @Email @Size(max = 180) String email,
             @NotBlank @Size(min = 8, max = 72) String password) { }
 
+    public record PasswordResetRequest(
+            @NotBlank @Email @Size(max = 180) String email) { }
+
+    public record PasswordResetConfirmRequest(
+            @NotBlank @Size(min = 20, max = 200) String token,
+            @NotBlank @Size(min = 8, max = 72) String newPassword) { }
+
+    public record ChangePasswordRequest(
+            @NotBlank @Size(min = 8, max = 72) String currentPassword,
+            @NotBlank @Size(min = 8, max = 72) String newPassword) { }
+
     public record AuthResponse(String accessToken, String tokenType, long expiresInSeconds, UserResponse user) { }
     public record UserResponse(UUID id, String fullName, String email) { }
+    public record PasswordResetResponse(String resetToken, Instant expiresAt) { }
 }

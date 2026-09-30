@@ -30,6 +30,8 @@ app:
       issuer: mascotas-al-dia
       ttl: ${JWT_TTL:PT8H}
       secret: ${JWT_SECRET:change-me-in-production-32-bytes-minimum-secret}
+    password-reset:
+      ttl: ${PASSWORD_RESET_TTL:PT15M}
 
 management:
   endpoints:

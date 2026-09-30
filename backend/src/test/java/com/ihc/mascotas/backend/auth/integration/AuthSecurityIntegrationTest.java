@@ -62,4 +62,60 @@ class AuthSecurityIntegrationTest {
                 .andExpect(jsonPath("$.email").value("lucia.integration@example.com"))
                 .andExpect(jsonPath("$.fullName").value("Lucía Gómez"));
     }
+    @Test
+    void passwordResetFlowUpdatesCredentials() throws Exception {
+        String email = "recovery.integration@example.com";
+        mvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"fullName":"Recovery Test","email":"recovery.integration@example.com","password":"password123"}
+                                """))
+                .andExpect(status().isCreated());
+
+        String resetBody = mvc.perform(post("/api/auth/password-reset/request")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email":"recovery.integration@example.com"}
+                                """))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        Matcher resetTokenMatcher = Pattern.compile("\"resetToken\":\"([^\"]+)\"").matcher(resetBody);
+        if (!resetTokenMatcher.find()) {
+            throw new AssertionError("La respuesta no contiene resetToken");
+        }
+        String resetToken = resetTokenMatcher.group(1);
+
+        mvc.perform(post("/api/auth/password-reset/confirm")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"token\":\"" + resetToken + "\",\"newPassword\":\"password456\"}"))
+                .andExpect(status().isNoContent());
+
+        mvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"" + email + "\",\"password\":\"password456\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.user.email").value(email));
+    }
+
+    @Test
+    void passwordResetRequestIsPublic() throws Exception {
+        mvc.perform(post("/api/auth/password-reset/request")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email":"missing@example.com"}
+                                """))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void passwordChangeRequiresAuthentication() throws Exception {
+        mvc.perform(post("/api/auth/password/change")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"currentPassword":"password123","newPassword":"password456"}
+                                """))
+                .andExpect(status().isUnauthorized());
+    }
+
 }

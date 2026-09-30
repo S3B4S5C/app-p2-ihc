@@ -15,6 +15,25 @@ export interface RegisterRequest {
   password: string;
 }
 
+export interface PasswordResetRequest {
+  email: string;
+}
+
+export interface PasswordResetResponse {
+  resetToken: string;
+  expiresAt: string;
+}
+
+export interface PasswordResetConfirmRequest {
+  token: string;
+  newPassword: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface AuthResponse {
   accessToken: string;
   tokenType: 'Bearer';

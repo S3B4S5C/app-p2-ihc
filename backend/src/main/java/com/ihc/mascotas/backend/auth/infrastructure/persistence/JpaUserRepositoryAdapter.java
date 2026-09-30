@@ -1,6 +1,7 @@
 package com.ihc.mascotas.backend.auth.infrastructure.persistence;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
@@ -24,6 +25,11 @@ class JpaUserRepositoryAdapter implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         return repository.findByEmail(email).map(JpaUserRepositoryAdapter::toDomain);
+    }
+
+    @Override
+    public Optional<User> findById(UUID id) {
+        return repository.findById(id).map(JpaUserRepositoryAdapter::toDomain);
     }
 
     @Override

@@ -40,4 +40,31 @@ describe('AuthService', () => {
     service.logout();
     expect(service.isAuthenticated()).toBe(false);
   });
+
+  it('requests a password recovery token', () => {
+    service.requestPasswordReset({ email: 'ana@example.com' }).subscribe((response) => {
+      expect(response.resetToken).toBe('reset-token');
+    });
+
+    http.expectOne(`${environment.apiUrl}/auth/password-reset/request`).flush({
+      resetToken: 'reset-token',
+      expiresAt: '2026-09-30T12:15:00Z',
+    });
+  });
+
+  it('confirms a password reset', () => {
+    service.confirmPasswordReset({ token: 'reset-token', newPassword: 'password456' }).subscribe();
+    const request = http.expectOne(`${environment.apiUrl}/auth/password-reset/confirm`);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body.newPassword).toBe('password456');
+    request.flush(null);
+  });
+
+  it('changes the password for an authenticated user', () => {
+    service.changePassword({ currentPassword: 'password123', newPassword: 'password456' }).subscribe();
+    const request = http.expectOne(`${environment.apiUrl}/auth/password/change`);
+    expect(request.request.method).toBe('POST');
+    request.flush(null);
+  });
+
 });

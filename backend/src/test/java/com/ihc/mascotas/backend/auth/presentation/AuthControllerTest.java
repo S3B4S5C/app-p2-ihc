@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.ihc.mascotas.backend.auth.application.AuthService;
+import com.ihc.mascotas.backend.auth.application.PasswordService;
 import com.ihc.mascotas.backend.shared.exception.GlobalExceptionHandler;
 
 import static org.mockito.Mockito.*;
@@ -20,12 +21,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthControllerTest {
 
     private final AuthService authService = mock(AuthService.class);
+    private final PasswordService passwordService = mock(PasswordService.class);
     private MockMvc mvc;
 
     @BeforeEach
     void setUp() {
-        reset(authService);
-        mvc = MockMvcBuilders.standaloneSetup(new AuthController(authService))
+        reset(authService, passwordService);
+        mvc = MockMvcBuilders.standaloneSetup(new AuthController(authService, passwordService))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
@@ -76,4 +78,31 @@ class AuthControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("Correo o contraseña incorrectos"));
     }
+    @Test
+    void passwordResetRequestReturnsTemporaryToken() throws Exception {
+        when(passwordService.requestReset("ana@example.com")).thenReturn(
+                new PasswordService.PasswordResetResult("temporary-reset-token", Instant.parse("2026-09-30T12:15:00Z")));
+
+        mvc.perform(post("/api/auth/password-reset/request")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email":"ana@example.com"}
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resetToken").value("temporary-reset-token"));
+    }
+
+    @Test
+    void passwordResetConfirmValidatesNewPassword() throws Exception {
+        mvc.perform(post("/api/auth/password-reset/confirm")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"token":"temporary-reset-token","newPassword":"short"}
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.newPassword").exists());
+
+        verifyNoInteractions(passwordService);
+    }
+
 }

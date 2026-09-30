@@ -38,6 +38,18 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.CONFLICT, exception.getMessage(), Map.of());
     }
 
+    @ExceptionHandler(InvalidCurrentPasswordException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiError handleInvalidCurrentPassword(InvalidCurrentPasswordException exception) {
+        return error(HttpStatus.BAD_REQUEST, exception.getMessage(), Map.of());
+    }
+
+    @ExceptionHandler(InvalidResetTokenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiError handleInvalidResetToken(InvalidResetTokenException exception) {
+        return error(HttpStatus.BAD_REQUEST, exception.getMessage(), Map.of());
+    }
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ApiError handleNotFound(NotFoundException exception) {
