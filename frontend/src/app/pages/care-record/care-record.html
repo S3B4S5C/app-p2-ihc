@@ -1,0 +1,79 @@
+<section class="care-page">
+  <header class="care-page__header">
+    <div class="care-page__icon">
+      <app-icon name="health_and_safety" [size]="28" />
+    </div>
+
+    <div>
+      <h1>Registrar cuidado</h1>
+      <p>
+        Guarda los cuidados realizados a tus mascotas.
+      </p>
+    </div>
+  </header>
+
+  <form
+    class="care-form"
+    [formGroup]="form"
+    (ngSubmit)="submit()"
+  >
+    <app-form-field
+      fieldId="pet-name"
+      label="Nombre de la mascota"
+      placeholder="Ej. Firulais"
+      autocomplete="off"
+      [control]="form.controls.petName"
+      [error]="petNameError()"
+    />
+
+    <app-form-field
+      fieldId="care"
+      label="Cuidado"
+      placeholder="Ej. Vacuna antirrábica"
+      autocomplete="off"
+      [control]="form.controls.care"
+      [error]="careError()"
+    />
+
+    <app-form-field
+      fieldId="animal-type"
+      label="Tipo de animal"
+      placeholder="Ej. Perro"
+      autocomplete="off"
+      [control]="form.controls.animalType"
+      [error]="animalTypeError()"
+    />
+
+    <app-form-field
+      fieldId="care-date"
+      label="Fecha"
+      type="date"
+      [control]="form.controls.careDate"
+      [error]="careDateError()"
+    />
+
+    @if (successMessage()) {
+      <div class="feedback feedback--success" role="status">
+        <app-icon name="check_circle" [size]="20" />
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="feedback feedback--error" role="alert">
+        <app-icon name="error" [size]="20" />
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <div class="care-form__actions">
+      <app-button
+        type="submit"
+        [loading]="loading()"
+        [disabled]="loading()"
+      >
+        Guardar cuidado
+      </app-button>
+    </div>
+  </form>
+</section>

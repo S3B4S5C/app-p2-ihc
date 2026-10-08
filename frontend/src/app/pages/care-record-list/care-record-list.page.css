@@ -1,0 +1,193 @@
+:host {
+  display: block;
+}
+
+.records-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.records-header {
+  display: grid;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.25rem;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.records-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 8vw, 2.5rem);
+}
+
+.records-header__description {
+  margin: 0.5rem 0 0;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.new-care-button {
+  min-height: 48px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+
+  padding: 0.75rem 1rem;
+
+  border-radius: var(--radius-md);
+
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.records-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.record-card {
+  padding: 1rem;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.record-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.record-card__pet {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.record-card__icon {
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.record-card h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.record-card__pet span {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.record-card time {
+  flex: 0 0 auto;
+
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.record-card__care {
+  margin-top: 1rem;
+  padding-top: 1rem;
+
+  border-top: 1px solid var(--color-border);
+}
+
+.record-card__label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.record-card__care p {
+  margin: 0.35rem 0 0;
+  line-height: 1.5;
+}
+
+.state-card {
+  min-height: 260px;
+
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.6rem;
+
+  padding: 1.5rem;
+
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-xl);
+
+  background: var(--color-surface);
+
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.state-card h2,
+.state-card p {
+  margin: 0;
+}
+
+.state-card--error {
+  color: var(--color-danger);
+}
+
+.retry-button,
+.empty-action {
+  margin-top: 0.5rem;
+  padding: 0.7rem 1rem;
+
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+
+  background: transparent;
+  color: var(--color-primary);
+
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media (min-width: 700px) {
+  .records-header {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+
+  .new-care-button {
+    width: auto;
+  }
+
+  .records-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

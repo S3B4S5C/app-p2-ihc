@@ -29,7 +29,7 @@ export class FormFieldComponent {
   readonly fieldId = input.required<string>();
   readonly label = input.required<string>();
   readonly control = input.required<FormControl<string>>();
-  readonly type = input<'text' | 'email' | 'password'>('text');
+  readonly type = input<'text' | 'email' | 'password' | 'date'>('text');
   readonly autocomplete = input('');
   readonly placeholder = input('');
   readonly error = input<string | null>(null);

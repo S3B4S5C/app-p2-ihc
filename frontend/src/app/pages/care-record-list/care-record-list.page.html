@@ -1,0 +1,88 @@
+<section class="records-page">
+  <header class="records-header">
+    <div>
+      <p class="eyebrow">Historial</p>
+      <h1>Cuidados</h1>
+      <p class="records-header__description">
+        Consulta los cuidados registrados para tus mascotas.
+      </p>
+    </div>
+
+    <a
+      class="new-care-button"
+      routerLink="/cuidados/nuevo"
+    >
+      <app-icon name="add" [size]="20" />
+      <span>Registrar cuidado</span>
+    </a>
+  </header>
+
+  @if (loading()) {
+    <div class="state-card">
+      <app-icon name="progress_activity" [size]="32" />
+      <p>Cargando cuidados...</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="state-card state-card--error">
+      <app-icon name="error" [size]="32" />
+
+      <p>{{ errorMessage() }}</p>
+
+      <button
+        type="button"
+        class="retry-button"
+        (click)="loadRecords()"
+      >
+        Reintentar
+      </button>
+    </div>
+  } @else if (records().length === 0) {
+    <div class="state-card">
+      <app-icon name="pets" [size]="42" />
+
+      <h2>Aún no hay cuidados</h2>
+
+      <p>
+        Registra el primer cuidado de una de tus mascotas.
+      </p>
+
+      <a
+        class="empty-action"
+        routerLink="/cuidados/nuevo"
+      >
+        Registrar cuidado
+      </a>
+    </div>
+  } @else {
+    <div class="records-list">
+      @for (record of records(); track record.id) {
+        <article class="record-card">
+          <div class="record-card__header">
+            <div class="record-card__pet">
+              <span class="record-card__icon">
+                <app-icon name="pets" [size]="22" />
+              </span>
+
+              <div>
+                <h2>{{ record.petName }}</h2>
+                <span>{{ record.animalType }}</span>
+              </div>
+            </div>
+
+            <time [attr.datetime]="record.careDate">
+              {{ record.careDate }}
+            </time>
+          </div>
+
+          <div class="record-card__care">
+            <span class="record-card__label">
+              Cuidado
+            </span>
+
+            <p>{{ record.care }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>

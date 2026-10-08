@@ -1,0 +1,97 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.care-page {
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+.care-page__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  margin-bottom: 1.75rem;
+}
+
+.care-page__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+
+  width: 3rem;
+  height: 3rem;
+  border-radius: 1rem;
+
+  background: color-mix(
+    in srgb,
+    currentColor 8%,
+    transparent
+  );
+}
+
+.care-page__header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.care-page__header p {
+  margin: 0.4rem 0 0;
+  line-height: 1.5;
+  opacity: 0.7;
+}
+
+.care-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.care-form__actions {
+  margin-top: 0.4rem;
+}
+
+.care-form__actions app-button {
+  display: block;
+  width: 100%;
+}
+
+.feedback {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.75rem 0.875rem;
+  border-radius: 0.75rem;
+
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.feedback--success {
+  color: #16794a;
+  background: rgba(22, 121, 74, 0.1);
+}
+
+.feedback--error {
+  color: #c03535;
+  background: rgba(192, 53, 53, 0.1);
+}
+
+@media (min-width: 48rem) {
+  .care-page {
+    padding-top: 2rem;
+  }
+
+  .care-form {
+    padding: 1.5rem;
+    border: 1px solid
+      color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 1.25rem;
+  }
+}
