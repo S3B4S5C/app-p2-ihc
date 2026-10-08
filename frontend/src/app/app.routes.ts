@@ -74,6 +74,13 @@ export const routes: Routes = [
                 (m) => m.CareRecord,
               ),
           },
+          {
+            path: ':id/editar',
+            loadComponent: () =>
+              import('./pages/care-record/care-record').then(
+                (m) => m.CareRecord,
+              ),
+          },
         ],
       },
 

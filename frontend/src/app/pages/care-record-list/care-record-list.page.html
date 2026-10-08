@@ -63,7 +63,9 @@
         <app-care-record-card
           [record]="record"
           [completing]="completingId() === record.id"
+          [deleting]="deletingId() === record.id"
           (complete)="completeRecord($event)"
+          (remove)="deleteRecord($event)"
         />
       }
     </div>

@@ -30,16 +30,45 @@
       {{ record().status === 'COMPLETED' ? 'Realizado' : 'Pendiente' }}
     </span>
 
-    @if (record().status === 'PENDING') {
+    <div class="record-card__actions">
+      <a
+        class="action-button"
+        [routerLink]="['/cuidados', record().id, 'editar']"
+        [state]="{ record: record() }"
+        [attr.aria-label]="'Editar cuidado de ' + record().petName"
+      >
+        <app-icon name="edit" [size]="20" />
+      </a>
+
+      <button
+        type="button"
+        class="action-button action-button--danger"
+        [disabled]="deleting()"
+        [attr.aria-label]="'Eliminar cuidado de ' + record().petName"
+        (click)="confirmDelete()"
+      >
+        <app-icon [name]="deleting() ? 'progress_activity' : 'delete'" [size]="20" />
+      </button>
+
       <button
         type="button"
         class="complete-button"
-        [disabled]="completing()"
-        [attr.aria-label]="'Marcar cuidado de ' + record().petName + ' como realizado'"
+        [disabled]="record().status === 'COMPLETED' || completing()"
+        [attr.aria-label]="record().status === 'COMPLETED' ? 'Este cuidado ya fue realizado' : 'Marcar cuidado de ' + record().petName + ' como realizado'"
+        [attr.title]="record().status === 'COMPLETED' ? 'Este cuidado ya fue realizado y no puede marcarse nuevamente' : null"
         (click)="complete.emit(record().id)"
       >
-        <app-icon [name]="completing() ? 'progress_activity' : 'check'" [size]="22" />
+        <app-icon
+          [name]="completing() ? 'progress_activity' : record().status === 'COMPLETED' ? 'task_alt' : 'check'"
+          [size]="22"
+        />
       </button>
-    }
+    </div>
   </div>
+
+  @if (record().status === 'COMPLETED') {
+    <p class="record-card__restriction">
+      Este cuidado ya fue realizado y no puede marcarse nuevamente.
+    </p>
+  }
 </article>

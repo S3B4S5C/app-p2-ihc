@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { CareRecordService } from '../../core/care/care-record';
-import { CreateCareRecordRequest } from '../../models/care-record.model';
+import { CareRecord as CareRecordModel, CreateCareRecordRequest } from '../../models/care-record.model';
 import { ButtonComponent } from '../../shared/ui/button/button.component';
 import { FormFieldComponent } from '../../shared/ui/form-field/form-field.component';
 import { IconComponent } from '../../shared/ui/icon/icon.component';
@@ -22,10 +23,14 @@ import { IconComponent } from '../../shared/ui/icon/icon.component';
 export class CareRecord {
   private readonly fb = inject(FormBuilder);
   private readonly careRecordService = inject(CareRecordService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   readonly loading = signal(false);
   readonly successMessage = signal('');
   readonly errorMessage = signal('');
+  readonly editId = this.route.snapshot.paramMap.get('id');
+  readonly editing = this.editId !== null;
 
   readonly form = this.fb.nonNullable.group({
     petName: ['', Validators.required],
@@ -33,6 +38,19 @@ export class CareRecord {
     animalType: ['', Validators.required],
     careDate: ['', Validators.required],
   });
+
+  constructor() {
+    const record = history.state['record'] as CareRecordModel | undefined;
+
+    if (this.editing && record) {
+      this.form.patchValue({
+        petName: record.petName,
+        care: record.care,
+        animalType: record.animalType,
+        careDate: record.careDate,
+      });
+    }
+  }
 
   submit(): void {
     if (this.form.invalid) {
@@ -45,19 +63,30 @@ export class CareRecord {
     this.errorMessage.set('');
 
     const request: CreateCareRecordRequest = this.form.getRawValue();
+    const operation = this.editId
+      ? this.careRecordService.update(this.editId, request)
+      : this.careRecordService.create(request);
 
-    this.careRecordService
-      .create(request)
+    operation
       .pipe(
         finalize(() => this.loading.set(false)),
       )
       .subscribe({
         next: () => {
+          if (this.editing) {
+            this.router.navigate(['/cuidados']);
+            return;
+          }
+
           this.successMessage.set('Cuidado registrado correctamente');
           this.form.reset();
         },
         error: () => {
-          this.errorMessage.set('No se pudo registrar el cuidado');
+          this.errorMessage.set(
+            this.editing
+              ? 'No se pudo actualizar el cuidado'
+              : 'No se pudo registrar el cuidado',
+          );
         },
       });
   }

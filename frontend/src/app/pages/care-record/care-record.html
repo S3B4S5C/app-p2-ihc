@@ -1,13 +1,13 @@
 <section class="care-page">
   <header class="care-page__header">
     <div class="care-page__icon">
-      <app-icon name="health_and_safety" [size]="28" />
+      <app-icon [name]="editing ? 'edit' : 'health_and_safety'" [size]="28" />
     </div>
 
     <div>
-      <h1>Registrar cuidado</h1>
+      <h1>{{ editing ? 'Editar cuidado' : 'Registrar cuidado' }}</h1>
       <p>
-        Guarda los cuidados realizados a tus mascotas.
+        {{ editing ? 'Actualiza los datos del cuidado.' : 'Guarda los cuidados realizados a tus mascotas.' }}
       </p>
     </div>
   </header>
@@ -72,7 +72,7 @@
         [loading]="loading()"
         [disabled]="loading()"
       >
-        Guardar cuidado
+        {{ editing ? 'Guardar cambios' : 'Guardar cuidado' }}
       </app-button>
     </div>
   </form>

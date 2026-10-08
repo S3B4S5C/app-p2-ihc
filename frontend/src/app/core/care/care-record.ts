@@ -22,4 +22,12 @@ export class CareRecordService {
   complete(id: string): Observable<CareRecord> {
     return this.http.patch<CareRecord>(`${this.url}/${id}/complete`, {});
   }
+
+  update(id: string, careRecord: CreateCareRecordRequest): Observable<CareRecord> {
+    return this.http.put<CareRecord>(`${this.url}/${id}`, careRecord);
+  }
+
+  remove(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
+  }
 }

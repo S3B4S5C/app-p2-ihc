@@ -26,6 +26,7 @@ export class CareRecordListPage implements OnInit {
   readonly errorMessage = signal('');
   readonly statusErrorMessage = signal('');
   readonly completingId = signal<string | null>(null);
+  readonly deletingId = signal<string | null>(null);
 
   ngOnInit(): void {
     this.loadRecords();
@@ -73,6 +74,31 @@ export class CareRecordListPage implements OnInit {
         },
         error: () => {
           this.statusErrorMessage.set('No se pudo marcar el cuidado como realizado');
+        },
+      });
+  }
+
+  deleteRecord(id: string): void {
+    if (this.deletingId() !== null) {
+      return;
+    }
+
+    this.deletingId.set(id);
+    this.statusErrorMessage.set('');
+
+    this.careRecordService
+      .remove(id)
+      .pipe(
+        finalize(() => this.deletingId.set(null)),
+      )
+      .subscribe({
+        next: () => {
+          this.records.update((records) =>
+            records.filter((record) => record.id !== id),
+          );
+        },
+        error: () => {
+          this.statusErrorMessage.set('No se pudo eliminar el cuidado');
         },
       });
   }
