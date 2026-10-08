@@ -1,0 +1,57 @@
+package com.ihc.mascotas.backend.care.infrastructure.persistence;
+
+import com.ihc.mascotas.backend.care.domain.CareRecord;
+import com.ihc.mascotas.backend.care.domain.CareRecordRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
+
+@Repository
+public class JpaCareRecordRepositoryAdapter implements CareRecordRepository {
+
+    private final SpringDataCareRecordRepository repository;
+
+    public JpaCareRecordRepositoryAdapter(SpringDataCareRecordRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public CareRecord save(CareRecord careRecord) {
+        CareRecordJpaEntity entity = repository.save(toEntity(careRecord));
+
+        return toDomain(entity);
+    }
+
+    @Override
+    public List<CareRecord> findByUserId(UUID userId) {
+        return repository.findByUserId(userId)
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    private CareRecordJpaEntity toEntity(CareRecord careRecord) {
+        return new CareRecordJpaEntity(
+                careRecord.id(),
+                careRecord.userId(),
+                careRecord.petName(),
+                careRecord.care(),
+                careRecord.animalType(),
+                careRecord.careDate(),
+                careRecord.createdAt()
+        );
+    }
+
+    private CareRecord toDomain(CareRecordJpaEntity careRecord) {
+        return new CareRecord(
+                careRecord.getId(),
+                careRecord.getUserId(),
+                careRecord.getPetName(),
+                careRecord.getCare(),
+                careRecord.getAnimalType(),
+                careRecord.getCareDate(),
+                careRecord.getCreatedAt()
+        );
+    }
+}

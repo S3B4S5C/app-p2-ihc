@@ -1,0 +1,47 @@
+package com.ihc.mascotas.backend.care.presentation;
+
+import com.ihc.mascotas.backend.care.application.CareRecordService;
+import com.ihc.mascotas.backend.care.domain.CareRecord;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/care-records")
+public class CareRecordController {
+
+    private final CareRecordService careRecordService;
+
+    public CareRecordController(CareRecordService careRecordService) {
+        this.careRecordService = careRecordService;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public CareRecord create(
+            Principal principal,
+            @Valid @RequestBody CreateCareRecordRequest request
+    ) {
+        String email = principal.getName();
+
+        return careRecordService.create(
+                email,
+                request.petName(),
+                request.care(),
+                request.animalType(),
+                request.careDate()
+        );
+    }
+
+    @GetMapping
+    public List<CareRecord> findByEmail(
+            Principal principal
+    ) {
+        String email = principal.getName();
+
+        return careRecordService.findByUserEmail(email);
+    }
+}
