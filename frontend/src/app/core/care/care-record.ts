@@ -18,4 +18,8 @@ export class CareRecordService {
   findAll(): Observable<CareRecord[]> {
     return this.http.get<CareRecord[]>(this.url);
   }
+
+  complete(id: string): Observable<CareRecord> {
+    return this.http.patch<CareRecord>(`${this.url}/${id}/complete`, {});
+  }
 }

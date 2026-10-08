@@ -1,0 +1,45 @@
+<article class="record-card" [class.record-card--completed]="record().status === 'COMPLETED'">
+  <div class="record-card__header">
+    <div class="record-card__pet">
+      <span class="record-card__icon">
+        <app-icon name="pets" [size]="22" />
+      </span>
+
+      <div>
+        <h2>{{ record().petName }}</h2>
+        <span>{{ record().animalType }}</span>
+      </div>
+    </div>
+
+    <time [attr.datetime]="record().careDate">
+      {{ record().careDate }}
+    </time>
+  </div>
+
+  <div class="record-card__care">
+    <span class="record-card__label">Cuidado</span>
+    <p>{{ record().care }}</p>
+  </div>
+
+  <div class="record-card__footer">
+    <span
+      class="record-card__status"
+      [class.record-card__status--completed]="record().status === 'COMPLETED'"
+    >
+      <app-icon [name]="record().status === 'COMPLETED' ? 'task_alt' : 'schedule'" [size]="18" />
+      {{ record().status === 'COMPLETED' ? 'Realizado' : 'Pendiente' }}
+    </span>
+
+    @if (record().status === 'PENDING') {
+      <button
+        type="button"
+        class="complete-button"
+        [disabled]="completing()"
+        [attr.aria-label]="'Marcar cuidado de ' + record().petName + ' como realizado'"
+        (click)="complete.emit(record().id)"
+      >
+        <app-icon [name]="completing() ? 'progress_activity' : 'check'" [size]="22" />
+      </button>
+    }
+  </div>
+</article>

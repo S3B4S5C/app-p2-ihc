@@ -1,3 +1,5 @@
+export type CareRecordStatus = 'PENDING' | 'COMPLETED';
+
 export interface CareRecord {
   id: string;
   userId: string;
@@ -6,6 +8,7 @@ export interface CareRecord {
   animalType: string;
   careDate: string;
   createdAt: string;
+  status: CareRecordStatus;
 }
 
 export interface CreateCareRecordRequest {

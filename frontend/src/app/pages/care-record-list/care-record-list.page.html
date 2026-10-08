@@ -54,34 +54,17 @@
       </a>
     </div>
   } @else {
+    @if (statusErrorMessage()) {
+      <p class="status-error" role="alert">{{ statusErrorMessage() }}</p>
+    }
+
     <div class="records-list">
       @for (record of records(); track record.id) {
-        <article class="record-card">
-          <div class="record-card__header">
-            <div class="record-card__pet">
-              <span class="record-card__icon">
-                <app-icon name="pets" [size]="22" />
-              </span>
-
-              <div>
-                <h2>{{ record.petName }}</h2>
-                <span>{{ record.animalType }}</span>
-              </div>
-            </div>
-
-            <time [attr.datetime]="record.careDate">
-              {{ record.careDate }}
-            </time>
-          </div>
-
-          <div class="record-card__care">
-            <span class="record-card__label">
-              Cuidado
-            </span>
-
-            <p>{{ record.care }}</p>
-          </div>
-        </article>
+        <app-care-record-card
+          [record]="record"
+          [completing]="completingId() === record.id"
+          (complete)="completeRecord($event)"
+        />
       }
     </div>
   }
