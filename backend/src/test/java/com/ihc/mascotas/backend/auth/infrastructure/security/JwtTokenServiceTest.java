@@ -12,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtTimestampValidator;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -31,8 +31,20 @@ class JwtTokenServiceTest {
         NimbusJwtEncoder encoder = NimbusJwtEncoder.withSecretKey(key)
                 .algorithm(MacAlgorithm.HS256)
                 .build();
-        JwtDecoder decoder = NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS256).build();
-        Clock clock = Clock.fixed(Instant.parse("2026-09-30T12:00:00Z"), ZoneOffset.UTC);
+        Clock clock = Clock.fixed(
+                Instant.parse("2026-09-30T12:00:00Z"),
+                ZoneOffset.UTC);
+
+        NimbusJwtDecoder decoder = NimbusJwtDecoder
+                .withSecretKey(key)
+                .macAlgorithm(MacAlgorithm.HS256)
+                .build();
+
+        JwtTimestampValidator timestampValidator = new JwtTimestampValidator();
+
+        timestampValidator.setClock(clock);
+
+        decoder.setJwtValidator(timestampValidator);
         JwtTokenService service = new JwtTokenService(encoder, Duration.ofHours(8), "mascotas-al-dia", clock);
         User user = new User(UUID.fromString("db490275-6bd7-433b-8564-7291a92d0af3"),
                 "Ana Pérez", "ana@example.com", "hash", clock.instant(), clock.instant());

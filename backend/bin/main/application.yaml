@@ -1,18 +1,37 @@
 spring:
   application:
-    name: despensa-backend
-  # Permite compartir el archivo .env con Docker Compose durante el desarrollo.
-  # Las variables de entorno reales tienen prioridad sobre los valores del archivo.
+    name: mascotas-al-dia-backend
   config:
     import: "optional:file:./.env[.properties]"
   datasource:
-    url: jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME:despensa}
-    username: ${DB_USER:despensa}
-    password: ${DB_PASSWORD:despensa_dev}
+    url: jdbc:postgresql://localhost:${DB_PORT:5432}/${DB_NAME:mascotas}
+    username: ${DB_USER:mascotas}
+    password: ${DB_PASSWORD:mascotas_dev}
     driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
 
 server:
   port: ${SERVER_PORT:8080}
+
+app:
+  cors:
+    allowed-origins: ${FRONTEND_ORIGIN:http://localhost:4200}
+  security:
+    jwt:
+      issuer: mascotas-al-dia
+      ttl: ${JWT_TTL:PT8H}
+      secret: ${JWT_SECRET:change-me-in-production-32-bytes-minimum-secret}
+    password-reset:
+      ttl: ${PASSWORD_RESET_TTL:PT15M}
 
 management:
   endpoints:
