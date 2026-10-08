@@ -37,6 +37,11 @@ public class JpaCareRecordRepositoryAdapter implements CareRecordRepository {
         return repository.findById(id).map(this::toDomain);
     }
 
+    @Override
+    public void deleteById(UUID id) {
+        repository.deleteById(id);
+    }
+
     private CareRecordJpaEntity toEntity(CareRecord careRecord) {
         return new CareRecordJpaEntity(
                 careRecord.id(),

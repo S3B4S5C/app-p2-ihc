@@ -11,4 +11,6 @@ public interface CareRecordRepository {
     List<CareRecord> findByUserId(UUID userId);
 
     Optional<CareRecord> findById(UUID id);
+
+    void deleteById(UUID id);
 }

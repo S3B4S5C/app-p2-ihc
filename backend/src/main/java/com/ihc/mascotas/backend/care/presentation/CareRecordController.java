@@ -50,4 +50,26 @@ public class CareRecordController {
     public CareRecord complete(Principal principal, @PathVariable UUID id) {
         return careRecordService.complete(principal.getName(), id);
     }
+
+    @PutMapping("/{id}")
+    public CareRecord update(
+            Principal principal,
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateCareRecordRequest request
+    ) {
+        return careRecordService.update(
+                principal.getName(),
+                id,
+                request.petName(),
+                request.care(),
+                request.animalType(),
+                request.careDate()
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(Principal principal, @PathVariable UUID id) {
+        careRecordService.delete(principal.getName(), id);
+    }
 }

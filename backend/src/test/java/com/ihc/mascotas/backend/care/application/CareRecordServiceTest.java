@@ -87,6 +87,43 @@ class CareRecordServiceTest {
         assertEquals(CareRecordStatus.COMPLETED, completed.status());
     }
 
+    @Test
+    void updateKeepsIdentityAndStatus() {
+        User user = user();
+        CareRecord pending = record(user.id(), CareRecordStatus.PENDING);
+        when(users.findByEmail(user.email())).thenReturn(Optional.of(user));
+        when(careRecords.findById(pending.id())).thenReturn(Optional.of(pending));
+        when(careRecords.save(any(CareRecord.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        CareRecord updated = service.update(
+                user.email(),
+                pending.id(),
+                "Milo actualizado",
+                "Control",
+                "Perro",
+                LocalDate.of(2026, 10, 9)
+        );
+
+        assertEquals(pending.id(), updated.id());
+        assertEquals(pending.userId(), updated.userId());
+        assertEquals(pending.createdAt(), updated.createdAt());
+        assertEquals(CareRecordStatus.PENDING, updated.status());
+        assertEquals("Milo actualizado", updated.petName());
+        assertEquals("Control", updated.care());
+    }
+
+    @Test
+    void deleteRemovesOwnedCare() {
+        User user = user();
+        CareRecord pending = record(user.id(), CareRecordStatus.PENDING);
+        when(users.findByEmail(user.email())).thenReturn(Optional.of(user));
+        when(careRecords.findById(pending.id())).thenReturn(Optional.of(pending));
+
+        service.delete(user.email(), pending.id());
+
+        verify(careRecords).deleteById(pending.id());
+    }
+
     private static User user() {
         Instant now = Instant.parse("2026-10-08T00:00:00Z");
         return new User(

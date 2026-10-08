@@ -80,4 +80,44 @@ public class CareRecordService {
 
         return careRecordRepository.save(completed);
     }
+
+    public CareRecord update(
+            String email,
+            UUID id,
+            String petName,
+            String care,
+            String animalType,
+            LocalDate careDate
+    ) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        CareRecord record = careRecordRepository.findById(id)
+                .filter(careRecord -> careRecord.userId().equals(user.id()))
+                .orElseThrow(() -> new NotFoundException("Cuidado no encontrado"));
+
+        CareRecord updated = new CareRecord(
+                record.id(),
+                record.userId(),
+                petName,
+                care,
+                animalType,
+                careDate,
+                record.createdAt(),
+                record.status()
+        );
+
+        return careRecordRepository.save(updated);
+    }
+
+    public void delete(String email, UUID id) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        CareRecord record = careRecordRepository.findById(id)
+                .filter(careRecord -> careRecord.userId().equals(user.id()))
+                .orElseThrow(() -> new NotFoundException("Cuidado no encontrado"));
+
+        careRecordRepository.deleteById(record.id());
+    }
 }
