@@ -4,6 +4,9 @@ import com.ihc.mascotas.backend.auth.domain.User;
 import com.ihc.mascotas.backend.auth.domain.UserRepository;
 import com.ihc.mascotas.backend.care.domain.CareRecord;
 import com.ihc.mascotas.backend.care.domain.CareRecordRepository;
+import com.ihc.mascotas.backend.care.domain.CareRecordStatus;
+import com.ihc.mascotas.backend.shared.exception.ConflictException;
+import com.ihc.mascotas.backend.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -38,7 +41,8 @@ public class CareRecordService {
                 care,
                 animalType,
                 careDate,
-                Instant.now()
+                Instant.now(),
+                CareRecordStatus.PENDING
         );
 
         return careRecordRepository.save(record);
@@ -49,5 +53,31 @@ public class CareRecordService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         return careRecordRepository.findByUserId(user.id());
+    }
+
+    public CareRecord complete(String email, UUID id) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        CareRecord record = careRecordRepository.findById(id)
+                .filter(careRecord -> careRecord.userId().equals(user.id()))
+                .orElseThrow(() -> new NotFoundException("Cuidado no encontrado"));
+
+        if (record.status() == CareRecordStatus.COMPLETED) {
+            throw new ConflictException("El cuidado ya fue realizado");
+        }
+
+        CareRecord completed = new CareRecord(
+                record.id(),
+                record.userId(),
+                record.petName(),
+                record.care(),
+                record.animalType(),
+                record.careDate(),
+                record.createdAt(),
+                CareRecordStatus.COMPLETED
+        );
+
+        return careRecordRepository.save(completed);
     }
 }

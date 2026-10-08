@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/care-records")
@@ -43,5 +44,10 @@ public class CareRecordController {
         String email = principal.getName();
 
         return careRecordService.findByUserEmail(email);
+    }
+
+    @PatchMapping("/{id}/complete")
+    public CareRecord complete(Principal principal, @PathVariable UUID id) {
+        return careRecordService.complete(principal.getName(), id);
     }
 }

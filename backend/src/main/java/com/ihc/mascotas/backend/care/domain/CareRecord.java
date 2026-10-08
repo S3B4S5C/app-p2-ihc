@@ -10,6 +10,7 @@ public record CareRecord(UUID id,
                          String care,
                          String animalType,
                          LocalDate careDate,
-                         Instant createdAt) {
+                         Instant createdAt,
+                         CareRecordStatus status) {
 
 }

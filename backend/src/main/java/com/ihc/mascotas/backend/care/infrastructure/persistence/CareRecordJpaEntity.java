@@ -1,7 +1,10 @@
 package com.ihc.mascotas.backend.care.infrastructure.persistence;
 
+import com.ihc.mascotas.backend.care.domain.CareRecordStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -32,9 +35,13 @@ public class CareRecordJpaEntity {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private CareRecordStatus status;
+
     protected CareRecordJpaEntity() {}
 
-    public CareRecordJpaEntity(UUID id, UUID userId, String petName, String care, String animalType, LocalDate careDate, Instant createdAt) {
+    public CareRecordJpaEntity(UUID id, UUID userId, String petName, String care, String animalType, LocalDate careDate, Instant createdAt, CareRecordStatus status) {
         this.id = id;
         this.userId = userId;
         this.petName = petName;
@@ -42,6 +49,7 @@ public class CareRecordJpaEntity {
         this.animalType = animalType;
         this.careDate = careDate;
         this.createdAt = createdAt;
+        this.status = status;
     }
 
     public UUID getId() {
@@ -70,5 +78,9 @@ public class CareRecordJpaEntity {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public CareRecordStatus getStatus() {
+        return status;
     }
 }

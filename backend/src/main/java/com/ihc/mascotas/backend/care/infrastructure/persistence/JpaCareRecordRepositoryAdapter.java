@@ -5,6 +5,7 @@ import com.ihc.mascotas.backend.care.domain.CareRecordRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -31,6 +32,11 @@ public class JpaCareRecordRepositoryAdapter implements CareRecordRepository {
                 .toList();
     }
 
+    @Override
+    public Optional<CareRecord> findById(UUID id) {
+        return repository.findById(id).map(this::toDomain);
+    }
+
     private CareRecordJpaEntity toEntity(CareRecord careRecord) {
         return new CareRecordJpaEntity(
                 careRecord.id(),
@@ -39,7 +45,8 @@ public class JpaCareRecordRepositoryAdapter implements CareRecordRepository {
                 careRecord.care(),
                 careRecord.animalType(),
                 careRecord.careDate(),
-                careRecord.createdAt()
+                careRecord.createdAt(),
+                careRecord.status()
         );
     }
 
@@ -51,7 +58,8 @@ public class JpaCareRecordRepositoryAdapter implements CareRecordRepository {
                 careRecord.getCare(),
                 careRecord.getAnimalType(),
                 careRecord.getCareDate(),
-                careRecord.getCreatedAt()
+                careRecord.getCreatedAt(),
+                careRecord.getStatus()
         );
     }
 }
