@@ -6,6 +6,7 @@ import com.ihc.mascotas.backend.care.domain.CareRecord;
 import com.ihc.mascotas.backend.care.domain.CareRecordRepository;
 import com.ihc.mascotas.backend.care.domain.CareRecordStatus;
 import com.ihc.mascotas.backend.shared.exception.ConflictException;
+import com.ihc.mascotas.backend.shared.exception.NotAllowedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -122,6 +123,34 @@ class CareRecordServiceTest {
         service.delete(user.email(), pending.id());
 
         verify(careRecords).deleteById(pending.id());
+    }
+
+    @Test
+    void completedCareCannotBeRescheduled() {
+        User user = user();
+        CareRecord completed = record(user.id(), CareRecordStatus.COMPLETED);
+
+        when(users.findByEmail(user.email()))
+                .thenReturn(Optional.of(user));
+
+        when(careRecords.findById(completed.id()))
+                .thenReturn(Optional.of(completed));
+
+        LocalDate newDate = LocalDate.of(2026, 10, 9);
+
+        assertThrows(
+                NotAllowedException.class,
+                () -> service.update(
+                        user.email(),
+                        completed.id(),
+                        completed.petName(),
+                        completed.care(),
+                        completed.animalType(),
+                        newDate
+                )
+        );
+
+        verify(careRecords, never()).save(any());
     }
 
     private static User user() {

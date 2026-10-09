@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { CareRecordService } from '../../core/care/care-record';
-import { CareRecord as CareRecordModel, CreateCareRecordRequest } from '../../models/care-record.model';
+import { CareRecord as CareRecordModel, CareRecordStatus, CreateCareRecordRequest } from '../../models/care-record.model';
 import { ButtonComponent } from '../../shared/ui/button/button.component';
 import { FormFieldComponent } from '../../shared/ui/form-field/form-field.component';
 import { IconComponent } from '../../shared/ui/icon/icon.component';
@@ -50,6 +50,15 @@ export class CareRecord {
         careDate: record.careDate,
       });
     }
+  }
+
+  canReschedule(): boolean {
+      const record = history.state['record'] as CareRecordModel | undefined;
+
+      if (record?.status === "COMPLETED") {
+        return false;
+      }
+      return true;
   }
 
   submit(): void {

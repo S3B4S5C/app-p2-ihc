@@ -44,14 +44,16 @@
       [error]="animalTypeError()"
     />
 
-    <app-form-field
-      fieldId="care-date"
-      label="Fecha"
-      type="date"
-      [control]="form.controls.careDate"
-      [error]="careDateError()"
-    />
-
+    @if(canReschedule()) {
+      <app-form-field
+        fieldId="care-date"
+        label="Fecha"
+        type="date"
+        [control]="form.controls.careDate"
+        [error]="careDateError()"
+      />  
+  }
+  
     @if (successMessage()) {
       <div class="feedback feedback--success" role="status">
         <app-icon name="check_circle" [size]="20" />
