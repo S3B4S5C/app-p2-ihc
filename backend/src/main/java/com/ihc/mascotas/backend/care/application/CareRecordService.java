@@ -6,6 +6,7 @@ import com.ihc.mascotas.backend.care.domain.CareRecord;
 import com.ihc.mascotas.backend.care.domain.CareRecordRepository;
 import com.ihc.mascotas.backend.care.domain.CareRecordStatus;
 import com.ihc.mascotas.backend.shared.exception.ConflictException;
+import com.ihc.mascotas.backend.shared.exception.ForbiddenException;
 import com.ihc.mascotas.backend.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +62,7 @@ public class CareRecordService {
 
         CareRecord record = careRecordRepository.findById(id)
                 .filter(careRecord -> careRecord.userId().equals(user.id()))
-                .orElseThrow(() -> new NotFoundException("Cuidado no encontrado"));
+                .orElseThrow(() -> new ForbiddenException("Cuidado no encontrado"));
 
         if (record.status() == CareRecordStatus.COMPLETED) {
             throw new ConflictException("El cuidado ya fue realizado");
